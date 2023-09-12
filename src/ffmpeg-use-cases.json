@@ -1,0 +1,116 @@
+{
+	"time_lapse_video": {
+		"description": "Create a time-lapse video from a sequence of images",
+		"-framerate": 10,
+		"-pattern_type": "glob",
+		"-i": "image*.jpg",
+		"-c:v": "libx264",
+		"-r": 30,
+		"-pix_fmt": "yuv420p",
+		"output_file": "output_time_lapse.mp4",
+		"command": "ffmpeg -framerate 10 -pattern_type glob -i 'image*.jpg' -c:v libx264 -r 30 -pix_fmt yuv420p output_time_lapse.mp4"
+	},
+
+	"create_video_from_images": {
+		"description": "Create a video from a series of images",
+		"-framerate": "1/2",
+		"-i": "image%d.jpg",
+		"-c:v": "libx264",
+		"-r": 30,
+		"-pix_fmt": "yuv420p",
+		"output_file": "output_images.mp4",
+		"command": "ffmpeg -framerate 1/2 -i image%d.jpg -c:v libx264 -r 30 -pix_fmt yuv420p output_images.mp4"
+	},
+	"extract_frames_from_video": {
+		"description": "Extract frames from a video file",
+		"-i": "input.mp4",
+		"-r": "1/5",
+		"output_pattern": "output%d.png",
+		"command": "ffmpeg -i input.mp4 -r 1/5 output%d.png"
+	},
+	"resize_video": {
+		"command": "ffmpeg -i input.mp4 -filter:v \"scale=w=640:h=360:force_original_aspect_ratio=decrease\" -c:a copy output.mp4",
+		"arguments": {
+			"-i": "input.mp4",
+			"-filter:v": "scale=w=640:h=360:force_original_aspect_ratio=decrease",
+			"-c:a": "copy"
+		},
+		"description": "Resize video"
+	},
+	"add_image_watermark": {
+		"command": "ffmpeg -i input.mp4 -i watermark.png -filter_complex \"overlay=10:10\" output.mp4",
+		"arguments": {
+			"-i": ["input.mp4", "watermark.png"],
+			"-filter_complex": "overlay=10:10"
+		},
+		"description": "Add image watermark to video"
+	},
+	"add_text_watermark": {
+		"command": "ffmpeg -i input.mp4 -vf drawtext=\"fontfile=Arial.ttf:text='Watermark Text':fontcolor=white:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2\" -c:a copy output.mp4",
+		"arguments": {
+			"-i": "input.mp4",
+			"-vf": "drawtext=fontfile=Arial.ttf:text='Watermark Text':fontcolor=white:fontsize=24:x=(w-text_w)/2:y=(h-text_h)/2",
+			"-c:a": "copy"
+		},
+		"description": "Add text watermark to video"
+	},
+	"convert_to_webm": {
+		"command": "ffmpeg -i input.mp4 -c:v libvpx-vp9 -c:a libopus output.webm",
+		"arguments": {
+			"-i": "input.mp4",
+			"-c:v": "libvpx-vp9",
+			"-c:a": "libopus"
+		},
+		"description": "Convert video to WebM format"
+	},
+	"extract_audio": {
+		"command": "ffmpeg -i input.mp4 -vn -acodec copy output.mp3",
+		"arguments": {
+			"-i": "input.mp4",
+			"-vn": null,
+			"-acodec": "copy"
+		},
+		"description": "Extract audio from video"
+	},
+	"concatenate_videos": {
+		"command": "ffmpeg -f concat -safe 0 -i filelist.txt -c copy output.mp4",
+		"arguments": {
+			"-f": "concat",
+			"-safe": "0",
+			"-i": "filelist.txt",
+			"-c": "copy"
+		},
+		"description": "Concatenate videos"
+	},
+	"extract_subtitle": {
+		"command": "ffmpeg -i input.mp4 -map 0:s:0 output.srt",
+		"arguments": {
+			"-i": "input.mp4",
+			"-map": "0:s:0"
+		},
+		"description": "Extract subtitle from video"
+	},
+	"create_slideshow_video": {
+		"command": "ffmpeg -framerate 1/5 -i image%d.jpg -c:v libx264 -r 30 -pix_fmt yuv420p output.mp4",
+		"arguments": {
+			"-framerate": "1/5",
+			"-i": "image%d.jpg",
+			"-c:v": "libx264",
+			"-r": "30",
+			"-pix_fmt": "yuv420p"
+		},
+		"description": "Create a slideshow video from multiple images"
+	},
+	"add_audio_to_video": {
+		"name": "Add audio to a video",
+		"command": "ffmpeg -i video.mp4 -i audio.mp3 -c:v copy -map 0:v:0 -map 1:a:0 -shortest output.mp4",
+		"arguments": {
+			"-i": ["video.mp4", "audio.mp3"],
+			"-c:v": "copy",
+			"-map": ["0:v:0", "1:a:0"],
+			"-shortest": null,
+			"output.mp4": null
+		},
+		"description": "Add an audio file to a video file. The resulting video will have the same video stream as the original video and the audio stream from the specified audio file."
+	}
+}
